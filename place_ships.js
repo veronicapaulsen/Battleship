@@ -95,11 +95,19 @@ function isLegal(startRow, startCol, endRow, endCol)
 function placeShip(startRow, startCol, endRow, endCol)
 {
     var row_elems = content_elem.childNodes;
-    //console.log("sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
+    console.log("sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
     
     if( startRow == endRow)
     {
 	var row = row_elems[startRow+1];
+	//switch start & end if backwards 
+	if( startCol > endCol )
+	{
+	    var temp = endCol;
+	    endCol = startCol;
+	    startCol = temp;
+	}
+	console.log("switch: sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
 	for( var j = startCol; j <= endCol; j++)
 	{
 	    var cell_elem = row.childNodes[j];
@@ -110,10 +118,15 @@ function placeShip(startRow, startCol, endRow, endCol)
     }
     else if ( startCol == endCol)
     {
+	if( startRow > endRow )
+	{
+	    var temp = endRow;
+	    endRow = startRow;
+	    startRow = temp;
+	}
 	for( var i = startRow+1; i <= endRow+1; i++)
 	{
 	    var row = row_elems[i];
-
 	    var cell_elem = row.childNodes[startCol];
 	    cell_elem.hasBattleship = true;
 	    var img_elem = cell_elem.childNodes[0];
@@ -161,7 +174,6 @@ function addShip(evt)
 	}
     }
     //check if we're done!
-    console.log(ship_list_elem.childNodes.length );
     if( ship_list_elem.childNodes.length == 1 )
     {
 	var button = document.createElement("button");
