@@ -3,6 +3,7 @@ var placements = [];
 var letters = ['A','B','C','D','E','F','G','H','I','J'];
 var content_elem = document.getElementById( 'content' );
 var ship_list_elem = document.getElementById( 'ship_list' );
+var body = document.getElementById( 'body' );
 var ship_list = ['Destroyer: 2','Cruiser: 3','Sub: 3', 'Battleship: 4','Carrier: 5'];
 var ship_sizes = [2, 3, 3, 4, 5];
 var ROWS = 11;
@@ -94,7 +95,7 @@ function isLegal(startRow, startCol, endRow, endCol)
 function placeShip(startRow, startCol, endRow, endCol)
 {
     var row_elems = content_elem.childNodes;
-    console.log("sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
+    //console.log("sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
     
     if( startRow == endRow)
     {
@@ -104,7 +105,6 @@ function placeShip(startRow, startCol, endRow, endCol)
 	    var cell_elem = row.childNodes[j];
 	    cell_elem.hasBattleship = true;
 	    var img_elem = cell_elem.childNodes[0];
-	    console.log("img_elem: " + img_elem);
 	    img_elem.src = "Images/grey.jpg";
 	}
     }
@@ -117,7 +117,6 @@ function placeShip(startRow, startCol, endRow, endCol)
 	    var cell_elem = row.childNodes[startCol];
 	    cell_elem.hasBattleship = true;
 	    var img_elem = cell_elem.childNodes[0];
-	    console.log("img_elem: " + img_elem);
 	    img_elem.src = "Images/grey.jpg";
 	}
     }
@@ -149,7 +148,7 @@ function addShip(evt)
     }else
     {
 	//we're on the second click:
-	console.log("evt row: " + evt.target.row + " evt col: " + evt.target.col);
+	//console.log("evt row: " + evt.target.row + " evt col: " + evt.target.col);
 	var size_given = isLegal(start_row, start_col, evt.target.row, evt.target.col);
 	if(size_given == ship_size_needed)
 	{
@@ -160,6 +159,14 @@ function addShip(evt)
 	    //delete the ship type from the list
 	    ship_list_elem.removeChild(ship_type);
 	}
+    }
+    //check if we're done!
+    console.log(ship_list_elem.childNodes.length );
+    if( ship_list_elem.childNodes.length == 1 )
+    {
+	var button = document.createElement("button");
+	button.innerHTML = "Play Battleship!!!";
+	body.appendChild( button );
     }
 
 }
