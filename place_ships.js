@@ -126,17 +126,19 @@ function placeShip(startRow, startCol, endRow, endCol)
 function addShip(evt)
 {
     //first we have to check which kind of ship they are adding from the list
-    var childNodes = ship_list_elem.childNodes;
+    var list_children = ship_list_elem.childNodes;
     var ship_size_needed = 0;
+    var ship_type = null;
     var start_row = content_elem.startPointRow;
     var start_col = content_elem.startPointCol;
     //console.log("startrow: " + start_row);
     //console.log("startcol: " + start_col);
-    for( var i=1; i < childNodes.length; i++)
+    for( var i=1; i < list_children.length; i++)
     {
-	if(childNodes[i].className == "highlighted")
+	if(list_children[i].className == "highlighted")
 	{
-	    ship_size_needed = childNodes[i].ship_size;
+	    ship_type = list_children[i];
+	    ship_size_needed = list_children[i].ship_size;
 	}
     }
     //check if we are on the first click
@@ -155,8 +157,10 @@ function addShip(evt)
 	    //reset
 	    content_elem.startPointRow = null;
 	    content_elem.startPointCol = null;
+	    //delete the ship type from the list
+	    ship_list_elem.removeChild(ship_type);
 	}
     }
-    //delete the ship type from the list
+
 }
 
