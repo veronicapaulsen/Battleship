@@ -152,6 +152,9 @@ function addShip(evt)
 	if(size_given == ship_size_needed)
 	{
 	    placeShip(start_row, start_col, evt.target.row, evt.target.col);
+	    //reset
+	    content_elem.startPointRow = null;
+	    content_elem.startPointCol = null;
 	}
     }
     //delete the ship type from the list
