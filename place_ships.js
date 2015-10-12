@@ -6,6 +6,7 @@ var ship_list = ['Destroyer: 2','Cruiser: 3','Sub: 3', 'Battleship: 4','Carrier:
 var ship_sizes = [2, 3, 3, 4, 5];
 var ROWS = 11;
 var COLS = 11;
+var finalPositions = [];
 
 function pageLoaded()
 {
@@ -135,7 +136,6 @@ function isLegal(startRow, startCol, endRow, endCol)
 function placeShip(startRow, startCol, endRow, endCol)
 {
     var row_elems = content_elem.childNodes;
-    console.log("sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
     
     if( startRow == endRow)
     {
@@ -147,7 +147,6 @@ function placeShip(startRow, startCol, endRow, endCol)
 	    endCol = startCol;
 	    startCol = temp;
 	}
-	console.log("switch: sR: "+ startRow + " sC: " + startCol + " eR: " + endRow + " eC: " + endCol);
 	for( var j = startCol; j <= endCol; j++)
 	{
 	    var cell_elem = row.childNodes[j];
@@ -183,8 +182,6 @@ function addShip(evt)
     var ship_type = null;
     var start_row = content_elem.startPointRow;
     var start_col = content_elem.startPointCol;
-    //console.log("startrow: " + start_row);
-    //console.log("startcol: " + start_col);
     for( var i=1; i < list_children.length; i++)
     {
 	if(list_children[i].className == "highlighted")
@@ -201,7 +198,6 @@ function addShip(evt)
     }else
     {
 	//we're on the second click:
-	//console.log("evt row: " + evt.target.row + " evt col: " + evt.target.col);
 	var size_given = isLegal(start_row, start_col, evt.target.row, evt.target.col);
 	if(size_given == ship_size_needed)
 	{
@@ -218,9 +214,51 @@ function addShip(evt)
     {
 	var button = document.createElement("button");
 	button.innerHTML = "Play Battleship!!!";
-	//button.onclick = send url /play_game
+	button.onclick = send_board; 
 	body.appendChild( button );
     }
 
+}
+
+function send_board()
+{
+    var position = [];
+    console.log("sending board");
+    //store all the positions of the placed board here.
+    var row_elems = content_elem.childNodes;
+    for( var i = 2; i < row_elems.length; i++)
+    {
+	var row = row_elems[i];
+	for( var j = 1; j < row.childNodes.length; j++)
+	{
+	    var cell = row.childNodes[j];
+	    if(cell.hasBattleship)
+	    {
+		var img = cell.childNodes[0];
+		//console.log(img);
+		position[0] = img.row;
+		position[1] = img.col;
+		//console.log(img.r + " " + img.c);
+		//console.log(position[0] + " " +position[1]);
+		finalPositions.push(position);
+	    }
+	}
+    }
+    //create the url with the finalPos info
+    var url = "";
+    for(var i=0; i < finalPositions.length; i++)
+    {
+	url+="block"+i+"="+finalPositions[i][0];
+	url+="+";
+	url+=finalPositions[i][1];
+	if( i !== finalPositions.length-1)
+	{
+	    url+="&";
+	}
+    }
+    console.log(url);
+    //var xhr = new XMLHttpRequest();    
+    //xhr.open("get", "/place_ships?"+url, true);
+    //xhr.send();
 }
 
