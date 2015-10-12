@@ -1,5 +1,3 @@
-var battleships = [];
-var placements = [];
 var letters = ['A','B','C','D','E','F','G','H','I','J'];
 var content_elem = document.getElementById( 'content' );
 var ship_list_elem = document.getElementById( 'ship_list' );
@@ -75,19 +73,61 @@ function clickShipType(evt)
 function isLegal(startRow, startCol, endRow, endCol)
 {
     var distance = 0;
+    var row_elems = content_elem.childNodes;
     if( startRow == endRow )
     {
 	//ship is going horizontal
+	var row = row_elems[startRow+1];
+	if( startCol > endCol )
+	{
+	    var temp = endCol;
+	    endCol = startCol;
+	    startCol = temp;
+	}	
+	for( var j = startCol; j <= endCol; j++)
+	{
+	    var cell_elem = row.childNodes[j];
+	    if (cell_elem.hasBattleship == true)
+	    {
+		console.log("this is an illegal placement");
+		//reset
+		content_elem.startPointRow = null;
+		content_elem.startPointCol = null;
+		return 0;
+	    }
+	}
 	distance = Math.abs(startCol - endCol) + 1;
     }
     else if( startCol == endCol )
     {
 	//ship is going vertical
+	if( startRow > endRow )
+	{
+	    var temp = endRow;
+	    endRow = startRow;
+	    startRow = temp;
+	}
+	for( var i = startRow+1; i <= endRow+1; i++)
+	{
+	    var row = row_elems[i];
+	    var cell_elem = row.childNodes[startCol];
+	    if(cell_elem.hasBattleship == true)
+	    {
+		console.log("this is an illegal placement");
+		//reset
+		content_elem.startPointRow = null;
+		content_elem.startPointCol = null;		
+		return 0;
+	    }
+	}
 	distance = Math.abs(startRow - endRow) + 1; 
-    }
+    }    
     else{
 	//find a way to print this error on page
 	console.log("diagonals are not allowed!");
+	//reset
+	content_elem.startPointRow = null;
+	content_elem.startPointCol = null;
     }
     return distance;
 }
@@ -178,6 +218,7 @@ function addShip(evt)
     {
 	var button = document.createElement("button");
 	button.innerHTML = "Play Battleship!!!";
+	//button.onclick = send url /play_game
 	body.appendChild( button );
     }
 
