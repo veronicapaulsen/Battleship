@@ -323,8 +323,8 @@ function guess( evt )
 {
     if( evt.target.hasBattleship )
     {
-	console.log( "You found a battleship!");
+	evt.target.src = "Images/red.jpg";
     }else{
-	console.log("Nope");
+	evt.target.src = "Images/white.jpeg";
     }
 }
