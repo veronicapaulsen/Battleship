@@ -1,7 +1,6 @@
 var fs   = require( 'fs' );
 var http = require( 'http' );
 //var url_utils = require( './url_utils.js' );
-var play_game = require('./playgame.js' );
 var ROWS = 11;
 var COLD = 11;
 
@@ -46,7 +45,9 @@ function serverFun( req, res )
     var file_worked = serveFile( req, res );
     if( req.url.indexOf("play_game?") >=0 )
     {
-        var kvs = getFormValuesFromURL(req.url);
+        var kvs = getFormValuesFromURL(req.url);	
+	//JSON.stringify
+	res.end( kvs );
     }
 }
 
