@@ -49,8 +49,8 @@ function pageLoaded()
 		img_elem.style.height = "19px";
 		img_elem.row = r;
 		img_elem.col = c;
+		img_elem.hasBattleship = false;
 		cell_elem.appendChild( img_elem );
-		cell_elem.hasBattleship = false;
 		cell_elem.onclick =  addShip;
 	    }
             row_elem.appendChild( cell_elem );
@@ -89,7 +89,8 @@ function isLegal(startRow, startCol, endRow, endCol)
 	for( var j = startCol; j <= endCol; j++)
 	{
 	    var cell_elem = row.childNodes[j];
-	    if (cell_elem.hasBattleship == true)
+	    var img_elem = cell_elem.firstChild;
+	    if (img_elem.hasBattleship == true)
 	    {
 		console.log("this is an illegal placement");
 		//reset
@@ -113,7 +114,8 @@ function isLegal(startRow, startCol, endRow, endCol)
 	{
 	    var row = row_elems[i];
 	    var cell_elem = row.childNodes[startCol];
-	    if(cell_elem.hasBattleship == true)
+	    var img_elem = cell_elem.firstChild;
+	    if(img_elem.hasBattleship == true)
 	    {
 		console.log("this is an illegal placement");
 		//reset
@@ -151,8 +153,8 @@ function placeShip(startRow, startCol, endRow, endCol)
 	for( var j = startCol; j <= endCol; j++)
 	{
 	    var cell_elem = row.childNodes[j];
-	    cell_elem.hasBattleship = true;
 	    var img_elem = cell_elem.childNodes[0];
+	    img_elem.hasBattleship = true;
 	    img_elem.src = "Images/grey.jpg";
 	}
     }
@@ -168,8 +170,8 @@ function placeShip(startRow, startCol, endRow, endCol)
 	{
 	    var row = row_elems[i];
 	    var cell_elem = row.childNodes[startCol];
-	    cell_elem.hasBattleship = true;
-	    var img_elem = cell_elem.childNodes[0];
+	    var img_elem = cell_elem.firstChild;
+	    img_elem.hasBattleship = true;
 	    img_elem.src = "Images/grey.jpg";
 	}
     }
@@ -231,9 +233,9 @@ function send_board()
 	for( var j = 1; j < row.childNodes.length; j++)
 	{
 	    var cell = row.childNodes[j];
-	    if(cell.hasBattleship)
+	    var img = cell.firstChild;
+	    if(img.hasBattleship)
 	    {
-		var img = cell.childNodes[0];
 		var position = [];
 		position[0] = img.row;
 		position[1] = img.col;
@@ -254,25 +256,24 @@ function send_board()
 	}
     }
 
-    console.log(url);
+    console.log("from send board: " + url);
     var xhr = new XMLHttpRequest();
     xhr.open("get", "/place_ships?"+url, true);
     xhr.addEventListener( "load", new_board );
-    xhr.send();
-    url = "";
+    xhr.send();    
 }
 
 function new_board( evt )
 {
     var kvs_str = evt.target.responseText ;
-    var kvs = {};
+    console.log("from new_board: " + kvs_str);
+    /*var kvs = {};
     var key_value_pairs = kvs_str.split( "&" );
     for( var i = 0; i < key_value_pairs.length; i++ )
     {
         var key_value = key_value_pairs[i].split( "=" );
         kvs[ key_value[0] ] = key_value[1];
-    }
-    console.log(kvs[0]);
+    }*/
     for( var r = 0; r < ROWS; r++ )
     {
         var row_elem = document.createElement( 'tr' );
@@ -300,13 +301,16 @@ function new_board( evt )
 		img_elem.style.width = "25px";
 		img_elem.style.height = "19px";
 		img_elem.row = r;
-		img_elem.col = c;
-		cell_elem.appendChild( img_elem );
+		img_elem.col = c;	
+		console.log(r+"+"+c);
+		console.log(kvs_str.indexOf(r+"+"+c));
 		if( kvs_str.indexOf(r+"+"+c) >= 0 ){
-		    cell_elem.hasBattleship = true;
+		    console.log("inside true");
+		    img_elem.hasBattleship = true;
 		}else{
-		    cell_elem.hasBattleship = false;
+		    img_elem.hasBattleship = false;
 		}
+		cell_elem.appendChild( img_elem );
 		cell_elem.onclick =  guess;
 	    }
             row_elem.appendChild( cell_elem );

@@ -7,7 +7,7 @@ var COLD = 11;
 
 function getFormValuesFromURL( url )
 {
-    var kvs = {};
+    //var kvs = {};
     var kvs_str = "";
     var parts = url.split( "?" );
     if( parts.length === 2 )
@@ -20,8 +20,7 @@ function getFormValuesFromURL( url )
         }*/
 	kvs_str = parts[1];
     }
-    console.log("the url: " + url);
-    console.log("the string: " + kvs_str);
+    console.log("from getFormsValues: " + kvs_str);
     return kvs_str;
 }
 
@@ -51,7 +50,7 @@ function serverFun( req, res )
     {
         var kvs = getFormValuesFromURL(req.url);	
 	//JSON.stringify
-	console.log("RESPONSE:" + kvs);
+	console.log("from serverFun: " + kvs);
 	res.end( kvs );
     }
 }
