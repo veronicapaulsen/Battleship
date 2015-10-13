@@ -213,17 +213,19 @@ function addShip(evt)
     if( ship_list_elem.childNodes.length == 1 )
     {
 	var button = document.createElement("button");
-	button.innerHTML = "Play Battleship!!!";
+	button.innerHTML = "Store ship placements!!!";
 	button.onclick = send_board; 
 	body.appendChild( button );
+	var a = document.createElement("a");
+	a.href = "play_game.html";
+	a.innerHTML = "Play Battleship!!!";
+	body.appendChild( a );
     }
 
 }
 
 function send_board()
 {
-    var position = [];
-    console.log("sending board");
     //store all the positions of the placed board here.
     var row_elems = content_elem.childNodes;
     for( var i = 2; i < row_elems.length; i++)
@@ -235,11 +237,9 @@ function send_board()
 	    if(cell.hasBattleship)
 	    {
 		var img = cell.childNodes[0];
-		//console.log(img);
+		var position = [];
 		position[0] = img.row;
 		position[1] = img.col;
-		//console.log(img.r + " " + img.c);
-		//console.log(position[0] + " " +position[1]);
 		finalPositions.push(position);
 	    }
 	}
@@ -255,10 +255,11 @@ function send_board()
 	{
 	    url+="&";
 	}
-    }
+    }    
+
     console.log(url);
-    //var xhr = new XMLHttpRequest();    
-    //xhr.open("get", "/place_ships?"+url, true);
-    //xhr.send();
+    var xhr = new XMLHttpRequest();    
+    xhr.open("get", "/place_ships?"+url, true);
+    xhr.send();
 }
 
