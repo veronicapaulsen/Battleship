@@ -1,6 +1,7 @@
 var letters = ['A','B','C','D','E','F','G','H','I','J'];
 var content_elem = document.getElementById( 'content' );
 var ship_list_elem = document.getElementById( 'ship_list' );
+var enemy_board = document.getElementById( 'enemy_board' );
 var body = document.getElementById( 'body' );
 var ship_list = ['Destroyer: 2','Cruiser: 3','Sub: 3', 'Battleship: 4','Carrier: 5'];
 var ship_sizes = [2, 3, 3, 4, 5];
@@ -258,12 +259,20 @@ function send_board()
     xhr.open("get", "/place_ships?"+url, true);
     xhr.addEventListener( "load", new_board );
     xhr.send();
+    url = "";
 }
 
-function new_board()
+function new_board( evt )
 {
     var kvs_str = evt.target.responseText ;
-    console.log(typeOf(kvs_str));
+    var kvs = {};
+    var key_value_pairs = kvs_str.split( "&" );
+    for( var i = 0; i < key_value_pairs.length; i++ )
+    {
+        var key_value = key_value_pairs[i].split( "=" );
+        kvs[ key_value[0] ] = key_value[1];
+    }
+    console.log(kvs[0]);
     for( var r = 0; r < ROWS; r++ )
     {
         var row_elem = document.createElement( 'tr' );
@@ -293,7 +302,7 @@ function new_board()
 		img_elem.row = r;
 		img_elem.col = c;
 		cell_elem.appendChild( img_elem );
-		if( kvs.indexOf(r+"+"+c) >= 0 ){	
+		if( kvs_str.indexOf(r+"+"+c) >= 0 ){	
 		    cell_elem.hasBattleship = true;
 		}else{
 		    cell_elem.hasBattleship = false;

@@ -8,17 +8,21 @@ var COLD = 11;
 function getFormValuesFromURL( url )
 {
     var kvs = {};
+    var kvs_str = "";
     var parts = url.split( "?" );
     if( parts.length === 2 )
     {
-        var key_value_pairs = parts[1].split( "&" );
+        /*var key_value_pairs = parts[1].split( "&" );
         for( var i = 0; i < key_value_pairs.length; i++ )
         {
             var key_value = key_value_pairs[i].split( "=" );
             kvs[ key_value[0] ] = key_value[1];
-        }
+        }*/
+	kvs_str = parts[1];
     }
-    return kvs
+    console.log("the url: " + url);
+    console.log("the string: " + kvs_str);
+    return kvs_str;
 }
 
 function serveFile( req, res )
@@ -43,10 +47,11 @@ function serverFun( req, res )
 {
     console.log( "The URL: '", req.url, "'" );
     var file_worked = serveFile( req, res );
-    if( req.url.indexOf("play_game?") >=0 )
+    if( !file_worked )
     {
         var kvs = getFormValuesFromURL(req.url);	
 	//JSON.stringify
+	console.log("RESPONSE:" + kvs);
 	res.end( kvs );
     }
 }
