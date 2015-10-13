@@ -30,23 +30,23 @@ function pageLoaded()
 	    if( c == 0 && r != 0 )
 	    {
 		cell_elem.innerHTML = r;
-		cell_elem.style.width = "50px";
+		cell_elem.style.width = "25px";
 	    }
 	    else if ( c ==0 && r == 0 )
 	    {
 		cell_elem.innerHTML = '';
-		cell_elem.style.width = "50px";
+		cell_elem.style.width = "25px";
 	    }
 	    else if (r == 0)
 	    {
 		cell_elem.innerHTML = letters[c-1];
-		cell_elem.style.height = "37px";
+		cell_elem.style.height = "19px";
 	    }
 	    else{
 		var img_elem = document.createElement( 'img' );
 		img_elem.src = "Images/ocean.jpg";
-		img_elem.style.width = "50px";
-		img_elem.style.height = "37px";
+		img_elem.style.width = "25px";
+		img_elem.style.height = "19px";
 		img_elem.row = r;
 		img_elem.col = c;
 		cell_elem.appendChild( img_elem );
@@ -85,7 +85,7 @@ function isLegal(startRow, startCol, endRow, endCol)
 	    var temp = endCol;
 	    endCol = startCol;
 	    startCol = temp;
-	}	
+	}
 	for( var j = startCol; j <= endCol; j++)
 	{
 	    var cell_elem = row.childNodes[j];
@@ -118,12 +118,12 @@ function isLegal(startRow, startCol, endRow, endCol)
 		console.log("this is an illegal placement");
 		//reset
 		content_elem.startPointRow = null;
-		content_elem.startPointCol = null;		
+		content_elem.startPointCol = null;
 		return 0;
 	    }
 	}
-	distance = Math.abs(startRow - endRow) + 1; 
-    }    
+	distance = Math.abs(startRow - endRow) + 1;
+    }
     else{
 	//find a way to print this error on page
 	console.log("diagonals are not allowed!");
@@ -137,11 +137,11 @@ function isLegal(startRow, startCol, endRow, endCol)
 function placeShip(startRow, startCol, endRow, endCol)
 {
     var row_elems = content_elem.childNodes;
-    
+
     if( startRow == endRow)
     {
 	var row = row_elems[startRow+1];
-	//switch start & end if backwards 
+	//switch start & end if backwards
 	if( startCol > endCol )
 	{
 	    var temp = endCol;
@@ -215,7 +215,7 @@ function addShip(evt)
     {
 	var button = document.createElement("button");
 	button.innerHTML = "Play Battleship!!!";
-	button.onclick = send_board; 
+	button.onclick = send_board;
 	body.appendChild( button );
     }
 
@@ -252,10 +252,10 @@ function send_board()
 	{
 	    url+="&";
 	}
-    }    
+    }
 
     console.log(url);
-    var xhr = new XMLHttpRequest();    
+    var xhr = new XMLHttpRequest();
     xhr.open("get", "/place_ships?"+url, true);
     xhr.addEventListener( "load", new_board );
     xhr.send();
@@ -282,27 +282,27 @@ function new_board( evt )
 	    if( c == 0 && r != 0 )
 	    {
 		cell_elem.innerHTML = r;
-		cell_elem.style.width = "50px";
+		cell_elem.style.width = "25px";
 	    }
 	    else if ( c ==0 && r == 0 )
 	    {
 		cell_elem.innerHTML = '';
-		cell_elem.style.width = "50px";
+		cell_elem.style.width = "25px";
 	    }
 	    else if (r == 0)
 	    {
 		cell_elem.innerHTML = letters[c-1];
-		cell_elem.style.height = "37px";
+		cell_elem.style.height = "19px";
 	    }
 	    else{
 		var img_elem = document.createElement( 'img' );
 		img_elem.src = "Images/ocean.jpg";
-		img_elem.style.width = "50px";
-		img_elem.style.height = "37px";
+		img_elem.style.width = "25px";
+		img_elem.style.height = "19px";
 		img_elem.row = r;
 		img_elem.col = c;
 		cell_elem.appendChild( img_elem );
-		if( kvs_str.indexOf(r+"+"+c) >= 0 ){	
+		if( kvs_str.indexOf(r+"+"+c) >= 0 ){
 		    cell_elem.hasBattleship = true;
 		}else{
 		    cell_elem.hasBattleship = false;
