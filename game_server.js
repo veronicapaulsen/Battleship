@@ -86,7 +86,6 @@ function match_users( IP_addr, partner_id )
 	var count = 0;	
 	for(var i = 0; i < partnerIDs.length; i++)
 	{
-	    count++;
 	    if( partnerIDs[i][0] != IP_addr ){
 		count++;
 	    }
