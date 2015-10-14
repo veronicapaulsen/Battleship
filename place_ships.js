@@ -290,50 +290,51 @@ function new_board( evt )
 	var text_box_elem = document.getElementById("partner_id");
 	var pid = text_box_elem.value;
 	check = window.setTimeout(sendRequest, 3000, pid, kvs_str);
-    }
+    }else if(check == 1){
 
-    for( var r = 0; r < ROWS; r++ )
-    {
-        var row_elem = document.createElement( 'tr' );
-        for( var c = 0; c < COLS; c++ )
-        {
-            var cell_elem = document.createElement( 'td' );
-	    if( c == 0 && r != 0 )
-	    {
-		cell_elem.innerHTML = r;
-		cell_elem.style.width = "25px";
-	    }
-	    else if ( c ==0 && r == 0 )
-	    {
-		cell_elem.innerHTML = '';
-		cell_elem.style.width = "25px";
-	    }
-	    else if (r == 0)
-	    {
-		cell_elem.innerHTML = letters[c-1];
-		cell_elem.style.height = "19px";
-	    }
-	    else{
-		var img_elem = document.createElement( 'img' );
-		img_elem.src = "Images/ocean.jpg";
-		img_elem.style.width = "25px";
-		img_elem.style.height = "19px";
-		img_elem.row = r;
-		img_elem.col = c;	
-		console.log(r+"+"+c);
-		console.log(kvs_str.indexOf(r+"+"+c));
-		if( kvs_str.indexOf(r+"+"+c) >= 0 ){
-		    console.log("inside true");
-		    img_elem.hasBattleship = true;
-		}else{
-		    img_elem.hasBattleship = false;
+	for( var r = 0; r < ROWS; r++ )
+	{
+            var row_elem = document.createElement( 'tr' );
+            for( var c = 0; c < COLS; c++ )
+            {
+		var cell_elem = document.createElement( 'td' );
+		if( c == 0 && r != 0 )
+		{
+		    cell_elem.innerHTML = r;
+		    cell_elem.style.width = "25px";
 		}
-		cell_elem.appendChild( img_elem );
-		cell_elem.onclick =  guess;
-	    }
-            row_elem.appendChild( cell_elem );
-        }
-        enemy_board.appendChild( row_elem );
+		else if ( c ==0 && r == 0 )
+		{
+		    cell_elem.innerHTML = '';
+		    cell_elem.style.width = "25px";
+		}
+		else if (r == 0)
+		{
+		    cell_elem.innerHTML = letters[c-1];
+		    cell_elem.style.height = "19px";
+		}
+		else{
+		    var img_elem = document.createElement( 'img' );
+		    img_elem.src = "Images/ocean.jpg";
+		    img_elem.style.width = "25px";
+		    img_elem.style.height = "19px";
+		    img_elem.row = r;
+		    img_elem.col = c;	
+		    console.log(r+"+"+c);
+		    console.log(kvs_str.indexOf(r+"+"+c));
+		    if( kvs_str.indexOf(r+"+"+c) >= 0 ){
+			console.log("inside true");
+			img_elem.hasBattleship = true;
+		    }else{
+			img_elem.hasBattleship = false;
+		    }
+		    cell_elem.appendChild( img_elem );
+		    cell_elem.onclick =  guess;
+		}
+		row_elem.appendChild( cell_elem );
+            }
+            enemy_board.appendChild( row_elem );
+	}
     }
 }
 
