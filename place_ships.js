@@ -267,6 +267,16 @@ function send_board()
     xhr.send();
 }
 
+function sendRequest( pid, url )
+{
+    url = "id="+pid+"&"+url;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("get", "/place_ships?"+url, true);
+    xhr.addEventListener( "load", new_board );
+    xhr.send();    	
+}
+
 function new_board( evt )
 {
     var resp_str = evt.target.responseText ;
@@ -274,14 +284,13 @@ function new_board( evt )
     var check = resp_str.substring(0,index).split("=")[1];
     var kvs_str = resp_str.substring(index+1);
 
-    /*if( check == 0)
+    if( check == 0)
     {
 	//set Timeout
-	var xhr = new XMLHttpRequest();
-	xhr.open("get", "/place_ships?"+url, true);
-	xhr.addEventListener( "load", new_board );
-	xhr.send();    	
-    }*/
+	var text_box_elem = document.getElementById("partner_id");
+	var pid = text_box_elem.value;
+	check = window.setTimeout(sendRequest, 3000, pid, kvs_str);
+    }
 
     for( var r = 0; r < ROWS; r++ )
     {
