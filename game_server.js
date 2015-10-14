@@ -2,6 +2,7 @@ var fs   = require( 'fs' );
 var http = require( 'http' );
 //var url_utils = require( './url_utils.js' );
 var partnerIDs = [];
+var game_positions = [];
 
 
 function getFormValuesFromURL( url )
@@ -55,12 +56,33 @@ function serverFun( req, res )
 	console.log("SERVERFUN AFTER MOD: " + kvs_str);
 	var partner_id = partner_kv[1];
 	var IP_addr = req.connection.remoteAddress;
+	//check if info is already stored before you push
+	var count = 0;	
+	for(var i = 0; i < game_positions.length; i++)
+	{
+	    if( game_positions[i][1] != IP_addr ){
+		count++;
+	    }
+	}
+	if(count == game_positions.length){
+	    game_positions.push([partner_id, IP_addr, kvs_str]);
+	}
+
 	console.log("PID: " + partner_id);
 	console.log("IPA: " + IP_addr);
 	var check = match_users( IP_addr, partner_id );
 	//JSON.stringify?
 	console.log("CHECK: " + check);
-	res.end( "check="+check+"&"+kvs_str );
+	if( check == 0 ){
+	    res.end( "check="+check+"&"+kvs_str );
+	}else{
+	    for( var i = 0; i < game_positions.length; i++){
+		if( game_positions[i][0] == partner_id && game_positions[i][1] != IP_addr ){
+		    kvs_str = game_positions[i][2];
+		    res.end( "check="+check+"&"+kvs_str );
+		}
+	    }
+	}
     }
 }
 
