@@ -219,6 +219,7 @@ function addShip(evt)
 	var button = document.createElement("button");
 	button.innerHTML = "Play Battleship!!!";
 	button.onclick = send_board;
+	button.id = "play_button";
 	body.appendChild( button );
     }
 
@@ -283,15 +284,18 @@ function new_board( evt )
     var index = resp_str.indexOf("&");
     var check = resp_str.substring(0,index).split("=")[1];
     var kvs_str = resp_str.substring(index+1);
-
+    var body = document.getElementById("body");
+    var play_button = document.getElementById("play_button");
+    var text_box_elem = document.getElementById("partner_id");
+    var pid = text_box_elem.value;
+    
     if( check == 0)
     {
 	//set Timeout
-	var text_box_elem = document.getElementById("partner_id");
-	var pid = text_box_elem.value;
 	check = window.setTimeout(sendRequest, 3000, pid, kvs_str);
     }else if(check == 1){
-
+	body.removeChild(text_box_elem);
+	body.removeChild(play_button);
 	for( var r = 0; r < ROWS; r++ )
 	{
             var row_elem = document.createElement( 'tr' );
