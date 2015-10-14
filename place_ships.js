@@ -8,6 +8,7 @@ var ship_sizes = [2, 3, 3, 4, 5];
 var ROWS = 11;
 var COLS = 11;
 var finalPositions = [];
+var hitBlocks = 0;
 
 
 function pageLoaded()
@@ -344,9 +345,14 @@ function new_board( evt )
 
 function guess( evt )
 {
+    var body = document.getElementById("body");
     if( evt.target.hasBattleship )
     {
+	hitBlocks++;
 	evt.target.src = "Images/red.jpg";
+	if( hitBlocks == 17 ){
+	    body.innerHTML = "YOU SUNK THEIR BATTLESHIPS!!!";
+	}
     }else{
 	evt.target.src = "Images/white.jpeg";
     }
