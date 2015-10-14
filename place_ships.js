@@ -391,7 +391,7 @@ function ping()
 	their_turn = false;
 	alert("Your turn");	
     }else{		    
-	window.setTimeout(ping, 3000);
+	window.setTimeout(ping, 1000);
     }
 }
 
