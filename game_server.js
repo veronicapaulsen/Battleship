@@ -1,8 +1,7 @@
 var fs   = require( 'fs' );
 var http = require( 'http' );
 //var url_utils = require( './url_utils.js' );
-var ROWS = 11;
-var COLD = 11;
+var partnerIDs = [];
 
 
 function getFormValuesFromURL( url )
@@ -20,7 +19,6 @@ function getFormValuesFromURL( url )
         }*/
 	kvs_str = parts[1];
     }
-    console.log("from getFormsValues: " + kvs_str);
     return kvs_str;
 }
 
@@ -48,11 +46,40 @@ function serverFun( req, res )
     var file_worked = serveFile( req, res );
     if( !file_worked )
     {
-        var kvs = getFormValuesFromURL(req.url);	
+        var kvs_str = getFormValuesFromURL(req.url);
+	var index = kvs_str.indexOf("&");
+	var partner_url = kvs_str.substring(0,index);
+	var partner_kv = partner_url.split("=");
+	kvs_str = kvs_str.substring(index+1);
+	var partner_id = partner_kv[1];
+
+	console.log("PID: " + partner_id);
+	var check = match_users( partner_id );
 	//JSON.stringify
-	console.log("from serverFun: " + kvs);
-	res.end( kvs );
+	console.log("from serverFun: " + kvs_str);
+	res.end( "check="+check+"&"+kvs_str );
     }
+}
+
+function match_users( partner_id )
+{
+    var check = 0;
+    for(var i=0; i<partnerIDs.length; i++)
+    {
+	console.log(partnerIDs[i]);
+	if( partnerIDs[i] == partner_id )
+	{
+	    check = 1;
+	}
+    }
+    if(check == 1)
+    {
+	console.log("You have a match!");
+    }else{
+	partnerIDs.push(partner_id);
+	console.log("Waiting for partner");
+    }
+    return check;
 }
 
 function init()

@@ -9,6 +9,7 @@ var ROWS = 11;
 var COLS = 11;
 var finalPositions = [];
 
+
 function pageLoaded()
 {
     content_elem.startPointRow = null;
@@ -245,6 +246,9 @@ function send_board()
     }
     //create the url with the finalPos info
     var url = "";
+    var text_box_elem = document.getElementById("partner_id");
+    var partner_id = text_box_elem.value;
+    url+="id="+partner_id+"&";
     for(var i=0; i < finalPositions.length; i++)
     {
 	url+="block"+i+"="+finalPositions[i][0];
@@ -260,20 +264,25 @@ function send_board()
     var xhr = new XMLHttpRequest();
     xhr.open("get", "/place_ships?"+url, true);
     xhr.addEventListener( "load", new_board );
-    xhr.send();    
+    xhr.send();
 }
 
 function new_board( evt )
 {
-    var kvs_str = evt.target.responseText ;
-    console.log("from new_board: " + kvs_str);
-    /*var kvs = {};
-    var key_value_pairs = kvs_str.split( "&" );
-    for( var i = 0; i < key_value_pairs.length; i++ )
+    var resp_str = evt.target.responseText ;
+    var index = resp_str.indexOf("&");
+    var check = resp_str.substring(0,index).split("=")[1];
+    var kvs_str = resp_str.substring(index+1);
+
+    /*if( check == 0)
     {
-        var key_value = key_value_pairs[i].split( "=" );
-        kvs[ key_value[0] ] = key_value[1];
+	//set Timeout
+	var xhr = new XMLHttpRequest();
+	xhr.open("get", "/place_ships?"+url, true);
+	xhr.addEventListener( "load", new_board );
+	xhr.send();    	
     }*/
+
     for( var r = 0; r < ROWS; r++ )
     {
         var row_elem = document.createElement( 'tr' );
@@ -328,3 +337,4 @@ function guess( evt )
 	evt.target.src = "Images/white.jpeg";
     }
 }
+
