@@ -8,7 +8,7 @@ var ship_sizes = [2, 3, 3, 4, 5];
 var ROWS = 11;
 var COLS = 11;
 var finalPositions = [];
-var first_turn = true;
+var their_turn = true;
 
 
 function pageLoaded()
@@ -293,10 +293,10 @@ function new_board( evt )
     if( check == 0)
     {
 	//set Timeout
-	first_turn = false;
+	their_turn = false;
 	check = window.setTimeout(sendRequest, 3000, pid, kvs_str);
     }else if(check == 1){
-	body.removeChild(text_box_elem);
+	//body.removeChild(text_box_elem);
 	body.removeChild(play_button);
 	for( var r = 0; r < ROWS; r++ )
 	{
@@ -345,14 +345,14 @@ function new_board( evt )
     }
 }
 
-var their_turn = false;
+//var their_turn = true;
 
-function guess( evt , first_turn)
+function guess( evt)
 {
-    if(first_turn){
+    /*if(first_turn){
 	their_turn = false;
 	first_turn = false;
-    }
+    }*/
     //ping();
     if( !their_turn ){
 	var xhr = new XMLHttpRequest();
@@ -382,17 +382,21 @@ function guess( evt , first_turn)
 
 function ping()
 {
+    var text_box_elem = document.getElementById("partner_id");
+    var pid = text_box_elem.value;
     var xhrping = new XMLHttpRequest();
-    xhrping.open("get","/place_ships?pingtest",true);
-    xhrping.send();
-    console.log(xhrping.responseText);
-    if(xhrping.responseText.indexOf("yourTurn") >= 0){
-	update_table(xhrping.responseText);
-	their_turn = false;
-	alert("Your turn");	
-    }else{		    
+    xhrping.open("get","/place_ships?"+"pid="+pid+"&pingtest", true);
+    xhrping.addEventListener("load", function(evt){
+	console.log(evt.target.responseText);
+	if(evt.target.responseText.indexOf("yourTurn") >= 0){
+	    update_table(evt.target.responseText);
+	    their_turn = false;
+	    alert("Your turn");	
+	}else{		    
 	window.setTimeout(ping, 1000);
-    }
+	}
+});
+    xhrping.send();
 }
 
 function update_table( kvs )
@@ -401,8 +405,8 @@ function update_table( kvs )
     console.log("kvs: " +kvs);
     var index = kvs.indexOf("&");
     kvs = kvs.substring(index);
-    index = kvs.indexOf("&");
-    kvs = kvs.substring(index);
+    /*index = kvs.indexOf("&");
+    kvs = kvs.substring(index);*/
 
     var kvs_pairs = kvs.split("&");
     var kvs_vals = [];

@@ -66,20 +66,20 @@ function serverFun( req, res )
 		}
 	    }
 	}else if( kvs_str.indexOf("pingtest") >= 0){
+	    console.log("PINGPID: " + partner_id);
+	    console.log("pingKVS: " + kvs_str);
+	    var response = "";
 	    for( var i = 0; i < tempStorage.length; i++ ){
 		if( tempStorage[i][0] == partner_id ){
 		    if( tempStorage[i][1] != IP_addr ){
-			var response = "yourTurn&"+tempStorage[i][2];
+			response = "yourTurn&"+tempStorage[i][2];
 			console.log(response);
 			tempStorage.splice(i,1);
 			console.log(tempStorage);
-			res.end(response);
-		    }else{
-			//not your turn;
-			res.end(tempStorage[i][1]);
 		    }
 		}
 	    }
+	    res.end(response);
 	}
 	else{
 	    //check if info is already stored before you push
