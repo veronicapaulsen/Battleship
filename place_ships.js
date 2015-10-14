@@ -8,6 +8,7 @@ var ship_sizes = [2, 3, 3, 4, 5];
 var ROWS = 11;
 var COLS = 11;
 var finalPositions = [];
+var first_turn = true;
 
 
 function pageLoaded()
@@ -292,6 +293,7 @@ function new_board( evt )
     if( check == 0)
     {
 	//set Timeout
+	first_turn = false;
 	check = window.setTimeout(sendRequest, 3000, pid, kvs_str);
     }else if(check == 1){
 	body.removeChild(text_box_elem);
@@ -323,7 +325,8 @@ function new_board( evt )
 		    img_elem.style.width = "25px";
 		    img_elem.style.height = "19px";
 		    img_elem.row = r;
-		    img_elem.col = c;	
+		    img_elem.col = c;
+		    img_elem.pid = pid;
 		    console.log(r+"+"+c);
 		    console.log(kvs_str.indexOf(r+"+"+c));
 		    if( kvs_str.indexOf(r+"+"+c) >= 0 ){
@@ -342,13 +345,87 @@ function new_board( evt )
     }
 }
 
-function guess( evt )
+var their_turn = false;
+
+function guess( evt , first_turn)
 {
-    if( evt.target.hasBattleship )
-    {
-	evt.target.src = "Images/red.jpg";
-    }else{
-	evt.target.src = "Images/white.jpeg";
+    if(first_turn){
+	their_turn = false;
+	first_turn = false;
     }
+    //ping();
+    if( !their_turn ){
+	var xhr = new XMLHttpRequest();
+	var url = "";
+	console.log(evt.target.src );
+	if( evt.target.src.indexOf( "Images/ocean.jpg" ) >= 0)
+	{
+	    if( evt.target.hasBattleship )
+	    {
+		evt.target.src = "Images/red.jpg";	    
+		url += "pid="+evt.target.pid+ "&row="+evt.target.row+"&col="+evt.target.col+"&status="+"red";
+	    }else{
+		evt.target.src = "Images/white.jpeg";
+		url += "pid="+evt.target.pid+ "&row="+evt.target.row+"&col="+evt.target.col+"&status="+"white";	    
+	    }
+	    xhr.open("get","/place_ships?"+url, true);
+	    xhr.send();
+    	    
+	}else{
+	    console.log("You've already clicked there");
+	}
+	their_turn = true;
+    }else{
+	ping();
+    }
+}
+
+function ping()
+{
+    var xhrping = new XMLHttpRequest();
+    xhrping.open("get","/place_ships?pingtest",true);
+    xhrping.send();
+    console.log(xhrping.responseText);
+    if(xhrping.responseText.indexOf("yourTurn") >= 0){
+	update_table(xhrping.responseText);
+	their_turn = false;
+	alert("Your turn");	
+    }else{		    
+	window.setTimeout(ping, 3000);
+    }
+}
+
+function update_table( kvs )
+{
+    console.log("UPDATETABLE");
+    console.log("kvs: " +kvs);
+    var index = kvs.indexOf("&");
+    kvs = kvs.substring(index);
+    index = kvs.indexOf("&");
+    kvs = kvs.substring(index);
+
+    var kvs_pairs = kvs.split("&");
+    var kvs_vals = [];
+    for(var i=0; i < kvs.length; i++){
+	kvs_vals.push( kvs_pairs[i].split("=")[1] );
+    }
+    //0=row 1=col 2=status
+    var ourTable = document.getElementById( "content" );
+    var row_elems = ourTable.childNodes;
+    console.log(row_elems);
+    console.log(kvs_vals[0]);
+    var row = row_elems[kvs_vals[0]];
+    var cells = row.childNodes;
+    var cell = cells[kvs_vals[1]];
+    var img = cell.firstChild;
+    if( kvs_vals[2] == "red" ){
+	console.log("red: "+kvs_vals[2]);
+	img.src = "/Images/red.jpg";
+    }else if( kvs_vals[2] == "white" ){
+	console.log("white: "+kvs_vals[2]);
+	img.src = "/Images/white.jpeg";
+    }else{
+	console.log( "guess went wrong" );
+    }	
 }
 

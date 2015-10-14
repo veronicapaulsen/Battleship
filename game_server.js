@@ -3,6 +3,8 @@ var http = require( 'http' );
 //var url_utils = require( './url_utils.js' );
 var partnerIDs = [];
 var game_positions = [];
+var playerTurn = "";
+var tempStorage = [];
 
 
 function getFormValuesFromURL( url )
@@ -48,38 +50,63 @@ function serverFun( req, res )
     if( !file_worked )
     {
         var kvs_str = getFormValuesFromURL(req.url);
-	console.log("SERVERFUN BEFORE MOD: " + kvs_str);
 	var index = kvs_str.indexOf("&");
 	var partner_url = kvs_str.substring(0,index);
 	var partner_kv = partner_url.split("=");
 	kvs_str = kvs_str.substring(index+1);
-	console.log("SERVERFUN AFTER MOD: " + kvs_str);
+//	console.log("SERVERFUN AFTER MOD: " + kvs_str);
 	var partner_id = partner_kv[1];
 	var IP_addr = req.connection.remoteAddress;
-	//check if info is already stored before you push
-	var count = 0;	
-	for(var i = 0; i < game_positions.length; i++)
-	{
-	    if( game_positions[i][1] != IP_addr ){
-		count++;
+	
+	if( kvs_str.indexOf("status")>=0 ){
+	    for(var i = 0; i < game_positions.length; i++){
+		if( game_positions[i][0] == partner_id && game_positions[i][1] != IP_addr ){		    
+		    tempStorage.push( [game_positions[i][0], game_positions[i][1], kvs_str]);
+		    console.log(tempStorage);
+		}
+	    }
+	}else if( kvs_str.indexOf("pingtest") >= 0){
+	    for( var i = 0; i < tempStorage.length; i++ ){
+		if( tempStorage[i][0] == partner_id ){
+		    if( tempStorage[i][1] != IP_addr ){
+			var response = "yourTurn&"+tempStorage[i][2];
+			console.log(response);
+			tempStorage.splice(i,1);
+			console.log(tempStorage);
+			res.end(response);
+		    }else{
+			//not your turn;
+			res.end(tempStorage[i][1]);
+		    }
+		}
 	    }
 	}
-	if(count == game_positions.length){
-	    game_positions.push([partner_id, IP_addr, kvs_str]);
-	}
-
-	console.log("PID: " + partner_id);
-	console.log("IPA: " + IP_addr);
-	var check = match_users( IP_addr, partner_id );
-	//JSON.stringify?
-	console.log("CHECK: " + check);
-	if( check == 0 ){
-	    res.end( "check="+check+"&"+kvs_str );
-	}else{
-	    for( var i = 0; i < game_positions.length; i++){
-		if( game_positions[i][0] == partner_id && game_positions[i][1] != IP_addr ){
-		    kvs_str = game_positions[i][2];
-		    res.end( "check="+check+"&"+kvs_str );
+	else{
+	    //check if info is already stored before you push
+	    var count = 0;	
+	    for(var i = 0; i < game_positions.length; i++)
+	    {
+		if( game_positions[i][1] != IP_addr ){
+		    count++;
+		}
+	    }
+	    if(count == game_positions.length){
+		game_positions.push([partner_id, IP_addr, kvs_str]);
+	    }
+	    
+	    console.log("PID: " + partner_id);
+	    console.log("IPA: " + IP_addr);
+	    var check = match_users( IP_addr, partner_id );
+	    //JSON.stringify?
+	    console.log("CHECK: " + check);
+	    if( check == 0 ){
+		res.end( "check="+check+"&"+kvs_str );
+	    }else{
+		for( var i = 0; i < game_positions.length; i++){
+		    if( game_positions[i][0] == partner_id && game_positions[i][1] != IP_addr ){
+			kvs_str = game_positions[i][2];
+			res.end( "check="+check+"&"+kvs_str );
+		    }
 		}
 	    }
 	}
